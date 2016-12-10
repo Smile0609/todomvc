@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Template • TodoMVC</title>
+  <!-- base.css 是 左边的侧边栏样式，我们这里不需要就把他注释掉 -->
+  <!-- <link rel="stylesheet" href="node_modules/todomvc-common/base.css"> -->
+  <link rel="stylesheet" href="node_modules/todomvc-app-css/index.css">
+  <!-- CSS overrides - remove if you don't need it -->
+  <link rel="stylesheet" href="css/app.css">
+</head>
+
+<body ng-app="TodoApp">
+  <section class="todoapp" ng-controller="MainCtrl">
+    <header class="header">
+      <h1>{{title}}</h1>
+      <form ng-submit="save()">
+        <input class="new-todo" ng-model="text" placeholder="What needs to be done?" autofocus>
+      </form>
+    </header>
+    <!-- This section should be hidden by default and shown when there are todos -->
+    <section class="main">
+      <input class="toggle-all" type="checkbox" ng-model="checkAll" ng-click="toggleAll()">
+      <label for="toggle-all">Mark all as complete</label>
+      <ul class="todo-list">
+        <!-- These are here just to show the structure of the list items -->
+        <!-- List items should get the class `editing` when editing and `completed` when marked as completed -->
+        <!-- 
+						未完成：什么类名都不需要
+						已完成：completed 类名
+						编辑：editing 类名
+						ng-repeat 
+							如果列表项中有重复项，会引发错误
+							解决办法就是：加上 track by $index
+					 -->
+        <li ng-repeat="todo in todos | filter:todoFilter track by $index" ng-class="{completed: todo.completed,editing:currentEditingId===todo.id}" auto-focus>
+          <div class="view">
+            <input class="toggle" type="checkbox" ng-model="todo.completed" ng-click="toggle()">
+            <label ng-dblclick="getEditing(todo)">{{todo.text}}</label>
+            <button class="destroy" ng-click="remove(todo.id)"></button>
+          </div>
+          <form ng-submit="edit()">
+            <input class="edit" ng-model="todo.text" ng-blur="edit()">
+          </form>
+        </li>
+      </ul>
+    </section>
+    <!-- This footer should hidden by default and shown when there are todos -->
+    <footer class="footer">
+      <!-- This should be `0 items left` by default -->
+      <span class="todo-count"><strong>{{(todos | filter:{completed:false}).length}}</strong> item left</span>
+      <!-- Remove this if you don't implement routing -->
+      <ul class="filters">
+        <li>
+          <!-- 
+							todoFilter.completed===undefined  true  selected
+						 -->
+          <a href="#/" ng-class="{selected: todoFilter.completed===undefined}">All</a>
+        </li>
+        <li>
+          <!-- 
+							todoFilter.completed undefined !undefined true
+							undefined === false false
+						 -->
+          <a href="#/active" ng-class="{selected:todoFilter.completed === false}">Active</a>
+        </li>
+        <li>
+          <!-- 
+							todoFilter.completed false
+						 -->
+          <a href="#/completed" ng-class="{selected: todoFilter.completed === true}">Completed</a>
+        </li>
+      </ul>
+      <!-- Hidden if no completed items are left ↓ -->
+      <button class="clear-completed" ng-click="clearAllCompleted()">Clear completed</button>
+    </footer>
+  </section>
+  <footer class="info">
+    <p>双击任务项修改任务名称.</p>
+    <!-- Remove the below line ↓ -->
+    <p>Template by <a href="http://sindresorhus.com">Sindre Sorhus</a></p>
+    <!-- Change this out with your name and url ↓ -->
+    <p>Created by <a href="http://github.com/Smile0609">Smile0609</a></p>
+    <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+  </footer>
+  <!-- Scripts here. Don't remove ↓ -->
+  <!-- <script src="node_modules/todomvc-common/base.js"></script> -->
+  <script src="node_modules/angular/angular.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/todoservice.js"></script>
+  <script src="js/tododevice.js"></script>
+  <script src="js/controller.js"></script>
+</body>
+
+</html>
